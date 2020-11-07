@@ -15,6 +15,7 @@
               <i class="mdi mdi-export print-icon"></i>
             </div>
             <button class="btn btn-print" type="button" data-toggle="modal" data-target="#cetakModal">Export Laporan</button>
+          <a href="{{url('/report/transaction/report')}}" method="GET" class="btn btn-print">Excel</a>
           </div>
         </div>
       </div>
@@ -267,13 +268,27 @@ var myChart = new Chart(ctx, {
         datasets: [{
             label: '',
             data: [
+              @php
+              $pemasukan = 0;
+              @endphp
             @if(count($incomes) != 0)
             @foreach($incomes as $income)
             @php
-            $total = \App\Transaction::whereDate('created_at', $income)
-            ->sum('total');
+            $transactions = \App\Transaction::select('kode_transaksi')
+			      ->whereDate('transactions.created_at', $income)
+            ->distinct()
+            ->latest()
+            ->get();
             @endphp
-            "{{ $total }}",
+            @foreach($transactions as $transaction)
+            @php
+            $transaksi = \App\Transaction::where('kode_transaksi', $transaction->kode_transaksi)
+						->select('transactions.*')
+						->first();
+            $pemasukan += $transaksi->total;
+            @endphp
+            @endforeach
+            "{{ $pemasukan }}",
             @endforeach
             @endif
             ],

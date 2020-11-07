@@ -14,14 +14,14 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return redirect(route('login'));
+	return redirect('login');
 });
 
 Route::get('/login', 'AuthManageController@viewLogin')->name('login');
 Route::post('/verify_login', 'AuthManageController@verifyLogin');
 Route::post('/first_account', 'UserManageController@firstAccount');
 
-Route::group(['middleware' => ['auth', 'checkRole:admin,kasir']], function(){
+Route::group(['middleware' => ['auth', 'checkRole:admin,kasir']], function () {
 	Route::get('/logout', 'AuthManageController@logoutProcess');
 	Route::get('/dashboard', 'ViewManageController@viewDashboard');
 	Route::get('/dashboard/chart/{filter}', 'ViewManageController@filterChartDashboard');
@@ -78,6 +78,7 @@ Route::group(['middleware' => ['auth', 'checkRole:admin,kasir']], function(){
 	Route::get('/transaction/receipt/{id}', 'TransactionManageController@receiptTransaction');
 	// ------------------------- Kelola Laporan -------------------------
 	Route::get('/report/transaction', 'ReportManageController@reportTransaction');
+	Route::get('/report/transaction/report', 'ReportManageController@reportexport');
 	Route::post('/report/transaction/filter', 'ReportManageController@filterTransaction');
 	Route::get('/report/transaction/chart/{id}', 'ReportManageController@chartTransaction');
 	Route::post('/report/transaction/export', 'ReportManageController@exportTransaction');
